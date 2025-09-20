@@ -6,6 +6,344 @@ L'API Faroty Payment Gateway utilise un système de sécurité à deux niveaux :
 - **Authentification par clés API** pour les requêtes
 - **Signatures webhook** pour les notifications
 
+## 📋 Table des Matières
+
+### 🚀 **Démarrage**
+1. [Guide de Démarrage Rapide](#-guide-de-démarrage-rapide)
+   - [Étape 1 : Obtenir vos Clés API](#étape-1--obtenir-vos-clés-api)
+   - [Étape 2 : Créer votre Premier Portefeuille](#étape-2--créer-votre-premier-portefeuille)
+   - [Étape 3 : Créer une Session de Paiement](#étape-3--créer-une-session-de-paiement)
+   - [Étape 4 : Rediriger vers l'Interface de Paiement](#étape-4--rediriger-vers-linterface-de-paiement)
+   - [Étape 5 : Configurer vos Webhooks](#étape-5--configurer-vos-webhooks)
+
+### 🔐 **Sécurité**
+2. [Authentification par Clés API](#-authentification-par-clés-api)
+3. [Sécurité des Webhooks](#-sécurité-des-webhooks)
+4. [Événements Webhook](#-événements-webhook)
+
+### 🛠️ **Intégration**
+5. [SDK et Exemples d'Intégration](#-sdk-et-exemples-dintégration)
+6. [Bonnes Pratiques de Sécurité](#️-bonnes-pratiques-de-sécurité)
+
+---
+
+## 🚀 Guide de Démarrage Rapide
+
+Ce guide vous accompagne pas à pas pour intégrer l'API Faroty Payment Gateway dans votre application.
+
+### 💡 **Prérequis**
+
+- ✅ Connaissances de base en développement web
+- ✅ Capacité à effectuer des requêtes HTTP/HTTPS
+- ✅ Un serveur web pour recevoir les webhooks
+- ✅ Un nom de domaine valide (recommandé pour la production)
+
+### 🎯 **Ce que vous obtiendrez**
+
+À la fin de ce guide, vous pourrez :
+- ✅ Accepter des paiements par carte bancaire
+- ✅ Recevoir des paiements via Orange Money et MTN MoMo
+- ✅ Traiter les paiements PayPal
+- ✅ Recevoir des notifications en temps réel
+- ✅ Gérer les remboursements
+
+### Étape 1 : Obtenir vos Clés API
+
+Pour commencer à utiliser l'API Faroty, vous devez d'abord obtenir vos clés d'authentification.
+
+#### 📞 **Demande d'Accès**
+
+Contactez notre équipe pour obtenir votre compte :
+- **Email** : support@faroty.com
+- **Téléphone** : +237 XXX XXX XXX
+- **Formulaire** : [Demande d'accès API](https://faroty.com/api-access)
+
+#### 🔑 **Réception des Clés**
+
+Une fois votre compte créé, vous recevrez :
+
+```json
+{
+  "account_id": "550e8400-e29b-41d4-a716-446655440000",
+  "account_name": "VotreEntreprise",
+  "api_keys": {
+    "public_key": "fk_test_V9H3cXAcZSl5lP3QvtzzCBHX91ClWG2TGXN5P86KizQiQ82CdoVsnOrnH455wRrOCs7UlHT_0Xc",
+    "private_key": "fs_test_m7N0p3Q6r9S2t5U8v1W4x7Y0z3A6b9C2d5E8f1G4h7I0j3K6l9M2n5O8p1Q4r7S0"
+  },
+  "webhook_secret": "whs_a8B9c7D2e5F1g4H8j3K6m9N2p5Q8r1T4X7Y0z3A6b9C2d5E8f1G4h7I0j3K6",
+  "environment": "test"
+}
+```
+
+### Étape 2 : Créer votre Premier Portefeuille
+
+Avant de pouvoir recevoir des paiements, vous devez créer un portefeuille (wallet) pour encaisser vos fonds.
+
+#### 📋 **Endpoint de Création**
+
+```http
+POST https://api-pay.faroty.me/payments/api/v1/wallets
+Content-Type: application/json
+X-API-Key: fk_test_V9H3cXAcZSl5lP3QvtzzCBHX91ClWG2TGXN5P86KizQiQ82CdoVsnOrnH455wRrOCs7UlHT_0Xc
+```
+
+#### 📤 **Données à Envoyer**
+
+```json
+{
+  "refName": "Wallet Principal",
+  "currency": "EUR",
+  "description": "Portefeuille principal pour les paiements",
+  "walletType": "BUSINESS"
+}
+```
+
+#### 📥 **Réponse Attendue**
+
+```json
+{
+  "success": true,
+  "data": {
+    "id": "wallet-550e8400-e29b-41d4-a716-446655440000",
+    "refName": "Wallet Principal",
+    "currency": "EUR",
+    "balance": 0.00,
+    "status": "ACTIVE",
+    "created_at": "2024-01-15T10:30:00Z"
+  },
+  "message": "Portefeuille créé avec succès"
+}
+```
+
+### Étape 3 : Créer une Session de Paiement
+
+Pour chaque paiement, vous devez créer une session qui génère un token unique.
+
+#### 📋 **Endpoint de Création de Session**
+
+```http
+POST https://api-pay.faroty.me/payments/api/v1/payment-sessions
+Content-Type: application/json
+X-API-Key: fk_test_V9H3cXAcZSl5lP3QvtzzCBHX91ClWG2TGXN5P86KizQiQ82CdoVsnOrnH455wRrOCs7UlHT_0Xc
+```
+
+#### 📤 **Données à Envoyer**
+
+```json
+{
+  "walletId": "1e700181-5e7b-4fa2-a617-fa3ea6572292",
+  "currencyCode": "XAF",
+  "cancelUrl": "/error",
+  "successUrl": "/success",
+  "type":"DEPOSIT",
+  "ipAddress": "1.1.1.1.1.1",
+  "amount":100
+}
+```
+
+#### 📥 **Réponse Attendue**
+
+```json
+{
+    "success": true,
+    "message": "payment.session.created.success",
+    "statusCode": 200,
+    "timestamp": "2025-09-20T11:42:59.517714",
+    "data": {
+        "sessionToken": "eaaPxHGa-x4rVPbmN7BYkYeHEAdwAA7F",
+        "sessionUrl": "/api/v1/payment-sessions/checkout/eaaPxHGa-x4rVPbmN7BYkYeHEAdwAA7F"
+    },
+    "pagination": null,
+    "metadata": null
+}
+```
+
+### Étape 4 : Rediriger vers l'Interface de Paiement
+
+Une fois la session créée, redirigez votre client vers l'interface de paiement Faroty.
+
+#### 🌐 **URL de Redirection**
+
+```bash
+https://pay.faroty.me/payment?sessionToken=eaaPxHGa-x4rVPbmN7BYkYeHEAdwAA7F
+```
+
+#### 🎨 **Interface Client**
+
+Votre client sera redirigé vers une interface sécurisée où il pourra :
+- ✅ Choisir sa méthode de paiement (Carte, Orange Money, MTN MoMo, PayPal)
+- ✅ Saisir ses informations de paiement
+- ✅ Confirmer la transaction
+
+### Étape 5 : Configurer vos Webhooks
+
+Pour recevoir les notifications de paiement en temps réel, configurez votre URL de webhook.
+
+#### 📋 **Endpoint de Configuration**
+
+```http
+POST https://api-pay.faroty.me/payments/api/v1/webhooks
+Content-Type: application/json
+X-API-Key: fk_test_V9H3cXAcZSl5lP3QvtzzCBHX91ClWG2TGXN5P86KizQiQ82CdoVsnOrnH455wRrOCs7UlHT_0Xc
+```
+
+#### 📤 **Données à Envoyer**
+
+```json
+{
+  "url": "https://api-pay.faroty.me/payments/api/v1/webhooks/webhook-local",
+  "events": [
+    "TRANSACTION_CREATED",
+    "PAYMENT_SUCCESS", 
+    "TRANSACTION_FAILED",
+    "PAYMENT_REFUNDED"
+  ],
+  "exclusive": false,
+  "allowMultiple": true,
+  "description": "Webhook de test pour les notifications de transaction",
+  "walletId": null,
+  "metadata": {
+    "applicationName": "Mon App Test",
+    "apiVersion": "v1",
+    "tags": ["test", "development"],
+    "customData": "Données personnalisées"
+  }
+}
+```
+
+#### 📥 **Réponse Attendue**
+
+```json
+{
+    "success": true,
+    "message": "Webhook créé avec succès",
+    "statusCode": 0,
+    "timestamp": "2025-09-20T06:43:37.316469",
+    "data": {
+        "id": "905ba84a-1fd4-4ae6-af4f-1ead4aba6c5c",
+        "url": "https://api-pay.faroty.me/payments/api/v1/webhooks/webhook-local",
+        "status": "ACTIVE",
+        "retryCount": 0,
+        "lastAttempt": null,
+        "lastError": null,
+        "exclusive": false,
+        "allowMultiple": true,
+        "description": null,
+        "createdAt": "2025-09-20T06:43:37.254364",
+        "updatedAt": "2025-09-20T06:43:37.254386",
+        "events": [
+            "PAYMENT_SUCCESS",
+            "PAYMENT_REFUNDED",
+            "TRANSACTION_CREATED",
+            "TRANSACTION_FAILED"
+        ],
+        "wallet": null,
+        "account": {
+            "id": "c08ef128-1b56-430b-ba7b-94188686dbbd",
+            "accountName": "Asso+",
+            "accountSubName": "Asso+ Account"
+        },
+        "metadata": null
+    },
+    "pagination": null,
+    "metadata": null
+}
+```
+
+#### 🔔 **Exemple de Notification Reçue**
+
+Lorsqu'un paiement est effectué, vous recevrez une notification POST sur votre URL :
+
+```http
+POST https://votre-site.com/webhook/faroty
+Content-Type: application/json
+X-Webhook-Signature: a1b2c3d4e5f6...
+X-Webhook-Timestamp: 1695134567890
+```
+
+```json
+{
+  "event": "payment_success",
+  "transaction_id": "550e8400-e29b-41d4-a716-446655440000",
+  "wallet_id": "wallet-550e8400-e29b-41d4-a716-446655440000",
+  "account_id": "550e8400-e29b-41d4-a716-446655440000",
+  "amount": 100.00,
+  "currency": "EUR",
+  "status": "SUCCESS",
+  "type": "DEPOSIT",
+  "provider_reference": "pay_1234567890",
+  "timestamp": "2024-01-15T10:30:00Z",
+  "session": {
+    "session_id": "77DfFDVzo8ov6FRMy0fUtXyhzjsZlTBB",
+    "title": "Achat Produit Premium",
+    "metadata": {
+      "order_id": "ORDER-123456",
+      "customer_id": "CUST-789"
+    }
+  },
+  "pay_metadata": {
+    "provider": "stripe",
+    "payment_intent_id": "pi_1234567890"
+  }
+}
+```
+
+### 🎯 **Récapitulatif du Workflow**
+
+```mermaid
+graph TD
+    A[👤 Demander l'accès API] --> B[🔑 Recevoir les clés]
+    B --> C[💰 Créer un portefeuille]
+    C --> D[📋 Créer une session de paiement]
+    D --> E[🌐 Rediriger le client vers pay.faroty.me]
+    E --> F[💳 Client effectue le paiement]
+    F --> G[🔔 Recevoir la notification webhook]
+    G --> H[✅ Traiter le paiement dans votre système]
+```
+
+### ⚡ **Exemple Complet d'Intégration**
+
+```javascript
+// 1. Créer une session de paiement
+const session = await fetch('https://api-pay.faroty.me/payments/api/v1/payment-sessions', {
+  method: 'POST',
+  headers: {
+    'Content-Type': 'application/json',
+    'X-API-Key': 'fk_test_V9H3cXAcZSl5lP3QvtzzCBHX91ClWG2TGXN5P86KizQiQ82CdoVsnOrnH455wRrOCs7UlHT_0Xc'
+  },
+  body: JSON.stringify({
+    walletId: 'wallet-550e8400-e29b-41d4-a716-446655440000',
+    amount: 100.00,
+    currency: 'EUR',
+    title: 'Achat Produit Premium',
+    successUrl: 'https://votre-site.com/success',
+    cancelUrl: 'https://votre-site.com/cancel'
+  })
+});
+
+const sessionData = await session.json();
+
+// 2. Rediriger vers l'interface de paiement
+window.location.href = sessionData.data.checkoutUrl;
+```
+
+### ❓ **Questions Fréquentes**
+
+#### **Q: Combien de temps faut-il pour obtenir l'accès à l'API ?**
+R: Généralement 24-48h après votre demande d'accès. Notre équipe vous contactera pour valider votre projet.
+
+#### **Q: Puis-je tester l'API sans créer de compte ?**
+R: Non, vous devez obtenir vos clés API pour accéder aux endpoints. Cependant, l'environnement de test est gratuit.
+
+#### **Q: Quelles devises sont supportées ?**
+R: EUR, XAF, USD principalement. Contactez-nous pour d'autres devises.
+
+#### **Q: Les webhooks sont-ils obligatoires ?**
+R: Recommandés pour une expérience optimale. Vous pouvez aussi vérifier le statut des paiements via l'API.
+
+#### **Q: Comment tester les webhooks en local ?**
+R: Utilisez des outils comme ngrok pour exposer votre serveur local : `ngrok http 3000`
+
 ---
 
 ## 🔑 Authentification par Clés API

@@ -16,7 +16,6 @@ services:
       LETSENCRYPT_HOST: docs.faroty.me
 
 
-
 networks:
   proxy-net:
     external: true
