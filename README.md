@@ -55,7 +55,6 @@ Pour commencer à utiliser l'API Faroty, vous devez d'abord obtenir vos clés d'
 
 Contactez notre équipe pour obtenir votre compte :
 - **Email** : support@faroty.com
-- **Téléphone** : +237 XXX XXX XXX
 - **Formulaire** : [Demande d'accès API](https://faroty.com/api-access)
 
 #### 🔑 **Réception des Clés**
@@ -91,10 +90,11 @@ X-API-Key: fk_test_V9H3cXAcZSl5lP3QvtzzCBHX91ClWG2TGXN5P86KizQiQ82CdoVsnOrnH455w
 
 ```json
 {
-  "refName": "Wallet Principal",
-  "currency": "EUR",
-  "description": "Portefeuille principal pour les paiements",
-  "walletType": "BUSINESS"
+    "accountId":"9c49fb07-97c0-4cb3-84cb-3d97a07bc771",
+    "currencyCode":"XAF",
+    "walletType":"PERSONAL",
+    "legalIdentifier":"5bdf3222-fea0-4938-82a1-df2955516f25",
+    "refId":"5bdf3222-fea0-4938-82a1-df2955516f21"
 }
 ```
 
@@ -102,16 +102,81 @@ X-API-Key: fk_test_V9H3cXAcZSl5lP3QvtzzCBHX91ClWG2TGXN5P86KizQiQ82CdoVsnOrnH455w
 
 ```json
 {
-  "success": true,
-  "data": {
-    "id": "wallet-550e8400-e29b-41d4-a716-446655440000",
-    "refName": "Wallet Principal",
-    "currency": "EUR",
-    "balance": 0.00,
-    "status": "ACTIVE",
-    "created_at": "2024-01-15T10:30:00Z"
-  },
-  "message": "Portefeuille créé avec succès"
+    "success": true,
+    "message": "Portefeuille créé avec succès",
+    "statusCode": 200,
+    "timestamp": "2025-09-20T10:58:08.992742331",
+    "data": {
+        "id": "d3109bb0-ea14-4975-8072-d6b24fd40b3b",
+        "legalIdentifier": "5bdf3222-fea0-4938-82a1-df2955516f25",
+        "walletType": "PERSONAL",
+        "depositFeeRate": 1.95,
+        "maxTransactionAmount": 500000.00,
+        "withdrawalFeeRate": 0.00,
+        "frozenReason": null,
+        "refId": "5bdf3222-fea0-4938-82a1-df2955516f21",
+        "refName": null,
+        "createdAt": "2025-09-20T11:58:08.878899595+01:00",
+        "updatedAt": "2025-09-20T11:58:08.878904314+01:00",
+        "currency": {
+            "id": "0b465399-e680-4033-b33d-e147de97132f",
+            "code": "XAF",
+            "nameFr": "Francs CFA",
+            "nameEn": "CFA Franc",
+            "symbol": "CFA",
+            "createdAt": "2025-09-18T12:26:54.335895",
+            "updatedAt": "2025-09-18T12:26:54.335971",
+            "walletsCount": 0,
+            "exchangeRatesCount": 84,
+            "active": true
+        },
+        "account": {
+            "id": "9c49fb07-97c0-4cb3-84cb-3d97a07bc771",
+            "userId": "df543270-b6ee-4742-a1d8-2f9ecceaa129",
+            "accountName": "Asso+",
+            "accountSubName": "Asso+ Account",
+            "accountMode": "SANDBOX",
+            "publicKey": "pk_test_1TluEIlfFDXLWQ96PZv6LAGVcmJeGNBiW4LUdjIntCYyIB7pNlUTIXeRKEEjv-0cp60iWEFVLnU",
+            "expiresAt": null,
+            "frozenReason": null,
+            "depositFeeRate": 0.00,
+            "withdrawalFeeRate": 0.00,
+            "createdAt": "2025-09-18T13:26:56.108367+01:00",
+            "updatedAt": "2025-09-18T13:26:56.108392+01:00",
+            "country": {
+                "id": "bf0db2d6-57d3-4e3b-a07f-1971ee22a932",
+                "code": "CM",
+                "nameFr": "Cameroun",
+                "nameEn": "Cameroon",
+                "maxPaymentAmount": 500000.00,
+                "paymentValidationTime": 3,
+                "minTransactionFeeRate": 1.95,
+                "isUserPaysFees": true,
+                "maxWithdrawalAmount": 1000000.00,
+                "withdrawalValidationThreshold": 250000.00,
+                "isAutoValidateWithdrawals": false,
+                "withdrawalValidationTime": 60,
+                "withdrawalCooldown": 0,
+                "createdAt": "2025-09-18T12:26:54.842771",
+                "updatedAt": "2025-09-18T12:26:54.842813",
+                "accountsCount": 3,
+                "paymentMethodsCount": 7,
+                "active": true
+            },
+            "walletsCount": 1,
+            "accountPaymentMethodsCount": 7,
+            "webhooksCount": 1,
+            "frozen": false
+        },
+        "balance": null,
+        "walletOwners": [],
+        "transactionsCount": 0,
+        "webhooksCount": 0,
+        "suspiciousActivitiesCount": 0,
+        "frozen": false
+    },
+    "pagination": null,
+    "metadata": null
 }
 ```
 
