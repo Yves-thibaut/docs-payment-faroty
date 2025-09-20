@@ -256,7 +256,7 @@ X-API-Key: fk_test_V9H3cXAcZSl5lP3QvtzzCBHX91ClWG2TGXN5P86KizQiQ82CdoVsnOrnH455w
 
 ```json
 {
-  "url": "https://api-pay.faroty.me/payments/api/v1/webhooks/webhook-local",
+  "url": "https://votre-domainte.example.com/webhooks/callback",
   "events": [
     "TRANSACTION_CREATED",
     "PAYMENT_SUCCESS", 
@@ -286,7 +286,7 @@ X-API-Key: fk_test_V9H3cXAcZSl5lP3QvtzzCBHX91ClWG2TGXN5P86KizQiQ82CdoVsnOrnH455w
     "timestamp": "2025-09-20T06:43:37.316469",
     "data": {
         "id": "905ba84a-1fd4-4ae6-af4f-1ead4aba6c5c",
-        "url": "https://api-pay.faroty.me/payments/api/v1/webhooks/webhook-local",
+        "url": "https://votre-domainte.example.com/webhooks/callback",
         "status": "ACTIVE",
         "retryCount": 0,
         "lastAttempt": null,
